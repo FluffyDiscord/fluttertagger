@@ -73,12 +73,20 @@ class FlutterTagger extends StatefulWidget {
   ///
   /// The tags in the [TextField] are styled with [TextStyle]
   /// for their associated trigger character defined in [triggerCharacterAndStyles].
+  ///
+  ///
+
+  final dynamic calculateTop;
+
   const FlutterTagger({
     Key? key,
     required this.overlay,
     required this.controller,
     required this.onSearch,
     required this.builder,
+    required this.calculateTop,
+    required this.textStyle,
+    this.extraOverlayYOffset,
     this.padding = EdgeInsets.zero,
     this.overlayHeight = 380,
     this.triggerCharacterAndStyles = const {},
@@ -98,11 +106,19 @@ class FlutterTagger extends StatefulWidget {
   /// Widget shown in the overlay when search context is active.
   final Widget overlay;
 
+  /// How much from the current text line
+  /// down should the overlay be.
+  final int? extraOverlayYOffset;
+
   /// Padding applied to [overlay].
   final EdgeInsetsGeometry padding;
 
   /// The [overlay]'s height.
   final double overlayHeight;
+
+  /// Text style used for calculating
+  /// cursor position for overlay
+  final TextStyle textStyle;
 
   /// Formats and replaces tags for raw text retrieval.
   /// By default, tags are replaced in this format:
@@ -857,8 +873,7 @@ class _FlutterTaggerState extends State<FlutterTagger> {
         double height = 0;
 
         try {
-          final renderBox =
-              _textFieldKey.currentContext!.findRenderObject() as RenderBox;
+          final renderBox = _textFieldKey.currentContext!.findRenderObject() as RenderBox;
           width = renderBox.size.width;
           height = renderBox.size.height;
           offset = renderBox.localToGlobal(Offset.zero);
@@ -871,7 +886,25 @@ class _FlutterTaggerState extends State<FlutterTagger> {
         }
 
         if (widget.overlayPosition == OverlayPosition.bottom) {
-          top = offset.dy + (height + widget.padding.vertical);
+          top = offset.dy + widget.padding.vertical;
+
+          final TextPainter textPainter = TextPainter(
+            text: TextSpan(text: controller.text, style: widget.textStyle),
+            textDirection: TextDirection.ltr,
+          );
+          textPainter.layout(maxWidth: width);
+
+          final TextPosition textPosition = controller.selection.base;
+          Offset caretOffset = textPainter.getOffsetForCaret(textPosition, Rect.zero);
+
+          var preferredLineHeight = textPainter.preferredLineHeight;
+          Offset positiveOffset = Offset(
+            caretOffset.dx > 0 ? caretOffset.dx : -caretOffset.dx,
+            (caretOffset.dy > 0 ? caretOffset.dy : -caretOffset.dy) +
+                preferredLineHeight,
+          );
+
+          top = top + positiveOffset.dy + (widget.extraOverlayYOffset ?? 0);
         }
 
         return Positioned(
