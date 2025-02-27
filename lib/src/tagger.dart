@@ -863,14 +863,13 @@ class _FlutterTaggerState extends State<FlutterTagger> {
         } catch (_) {}
 
         double? top;
-        double? bottom;
 
         if (widget.overlayPosition == OverlayPosition.top) {
           top = offset.dy - (widget.overlayHeight + widget.padding.vertical);
         }
 
         if (widget.overlayPosition == OverlayPosition.bottom) {
-          bottom = offset.dy - widget.overlayHeight - widget.padding.vertical;
+          top = offset.dy + (height + widget.padding.vertical);
         }
 
         return Positioned(
@@ -878,7 +877,6 @@ class _FlutterTaggerState extends State<FlutterTagger> {
           width: width,
           height: widget.overlayHeight,
           top: top,
-          bottom: bottom,
           child: widget.overlay,
         );
       },
