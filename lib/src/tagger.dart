@@ -854,11 +854,13 @@ class _FlutterTaggerState extends State<FlutterTagger> {
       overlayChildBuilder: (context) {
         Offset offset = Offset.zero;
         double width = 0;
+        double height = 0;
 
         try {
           final renderBox =
               _textFieldKey.currentContext!.findRenderObject() as RenderBox;
           width = renderBox.size.width;
+          height = renderBox.size.height;
           offset = renderBox.localToGlobal(Offset.zero);
         } catch (_) {}
 
