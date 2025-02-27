@@ -73,18 +73,12 @@ class FlutterTagger extends StatefulWidget {
   ///
   /// The tags in the [TextField] are styled with [TextStyle]
   /// for their associated trigger character defined in [triggerCharacterAndStyles].
-  ///
-  ///
-
-  final dynamic calculateTop;
-
   const FlutterTagger({
     Key? key,
     required this.overlay,
     required this.controller,
     required this.onSearch,
     required this.builder,
-    required this.calculateTop,
     required this.textStyle,
     this.extraOverlayYOffset,
     this.padding = EdgeInsets.zero,
