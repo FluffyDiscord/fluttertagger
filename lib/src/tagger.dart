@@ -186,8 +186,8 @@ class _FlutterTaggerState extends State<FlutterTagger> {
   final OverlayPortalController _overlayController = OverlayPortalController();
 
   /// Formats tag text to include id
-  String _formatTagText(String id, String tag, String triggerCharacter) {
-    return widget.tagTextFormatter?.call(id, tag, triggerCharacter) ??
+  String _formatTagText(String id, String tag, String triggerCharacter, dynamic extra) {
+    return widget.tagTextFormatter?.call(id, tag, triggerCharacter, extra) ??
         "@$id#$tag#";
   }
 
@@ -368,7 +368,7 @@ class _FlutterTaggerState extends State<FlutterTagger> {
 
   /// Adds [tag] and [id] to [_tags] and
   /// updates TextField value with [tag].
-  void _addTag(String id, String tag) {
+  void _addTag(String id, String tag, dynamic extra) {
     _shouldSearch = false;
     _shouldHideOverlay(true);
 
@@ -414,6 +414,7 @@ class _FlutterTaggerState extends State<FlutterTagger> {
         startIndex: offset - tag.length,
         endIndex: offset,
         text: tag,
+        extra: extra,
       );
       _tags[taggedText] = id;
       _tagTrie.insert(taggedText);
@@ -996,9 +997,8 @@ class FlutterTaggerController extends TextEditingController {
   Function? _deferCallback;
   Function? _clearCallback;
   Function? _dismissOverlayCallback;
-  Function(String id, String name)? _addTagCallback;
-  String Function(String id, String tag, String triggerCharacter)?
-      _formatTagTextCallback;
+  Function(String id, String name, dynamic extra)? _addTagCallback;
+  String Function(String id, String tag, String triggerCharacter, dynamic extra)? _formatTagTextCallback;
 
   String _text = "";
 
@@ -1113,8 +1113,8 @@ class FlutterTaggerController extends TextEditingController {
   }
 
   /// Adds a tag.
-  void addTag({required String id, required String name}) {
-    _addTagCallback?.call(id, name);
+  void addTag({required String id, required String name, dynamic extra = null}) {
+    _addTagCallback?.call(id, name, extra);
   }
 
   /// Registers callback for clearing [FlutterTagger]'s
@@ -1134,13 +1134,13 @@ class FlutterTaggerController extends TextEditingController {
   }
 
   /// Registers callback for adding tags.
-  void _registerAddTagCallback(Function(String id, String name) callback) {
+  void _registerAddTagCallback(Function(String id, String name, dynamic extra) callback) {
     _addTagCallback = callback;
   }
 
   /// Registers callback for formatting tag texts.
   void _registerFormatTagTextCallback(
-    String Function(String id, String tag, String triggerCharacter) callback,
+    String Function(String id, String tag, String triggerCharacter, dynamic extra) callback,
   ) {
     _formatTagTextCallback = callback;
   }

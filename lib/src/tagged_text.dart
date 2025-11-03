@@ -4,11 +4,13 @@ class TaggedText {
   final int startIndex;
   final int endIndex;
   final String text;
+  final dynamic extra;
 
   const TaggedText({
     required this.startIndex,
     required this.endIndex,
     required this.text,
+    this.extra = null,
   });
 
   @override
