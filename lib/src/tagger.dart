@@ -15,6 +15,7 @@ typedef TagTextFormatter = String Function(
   String id,
   String tag,
   String triggerCharacter,
+  dynamic extra
 );
 
 ///{@macro searchCallback}
