@@ -968,7 +968,7 @@ class FlutterTaggerController extends TextEditingController {
         final triggerCharacter = tag.text[0];
 
         final formattedTagText =
-            _formatTagTextCallback?.call(id, tagText, triggerCharacter);
+            _formatTagTextCallback?.call(id, tagText, triggerCharacter, null);
 
         if (formattedTagText != null) {
           final newText = subText.replaceRange(
