@@ -3,6 +3,8 @@ import 'package:fluttertagger/src/tag.dart';
 import 'package:fluttertagger/src/tagged_text.dart';
 import 'package:fluttertagger/src/trie.dart';
 
+import 'tagged_text.dart';
+
 /// {@macro builder}
 typedef FlutterTaggerWidgetBuilder = Widget Function(
   BuildContext context,
@@ -297,11 +299,19 @@ class _FlutterTaggerState extends State<FlutterTagger> {
       } else if (taggedText.startIndex == start) {
         String suffix = word.substring(taggedText.text.length);
         String formattedTagText = taggedText.text.replaceAll(triggerChar, "");
+
+        TaggedText? savedTag;
+        for(final tag in _tags.keys) {
+          if(tag == taggedText) {
+            savedTag = tag;
+            break;
+          }
+        }
         formattedTagText = _formatTagText(
           _tags[taggedText]!,
           formattedTagText,
           triggerChar,
-          taggedText.extra,
+          savedTag?.extra,
         );
 
         result.add(formattedTagText);
