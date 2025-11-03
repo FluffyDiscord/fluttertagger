@@ -301,6 +301,7 @@ class _FlutterTaggerState extends State<FlutterTagger> {
           _tags[taggedText]!,
           formattedTagText,
           triggerChar,
+          null,
         );
 
         result.add(formattedTagText);
